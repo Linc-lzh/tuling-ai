@@ -146,7 +146,9 @@ function globalQuestion() {
 
    ```shell
    yarn build
+
    ```
+   
 
 2. Deploy
 

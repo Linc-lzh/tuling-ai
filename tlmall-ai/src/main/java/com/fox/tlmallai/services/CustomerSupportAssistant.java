@@ -23,7 +23,7 @@ public class CustomerSupportAssistant {
     public CustomerSupportAssistant(ChatClient.Builder modelBuilder, VectorStore vectorStore, ChatMemory chatMemory) {
         this.chatClient = modelBuilder
                .defaultSystem("""
-                        您是电商平台的智能客服导购。请以友好、热情、专业的态度回复客户。
+                        您是电商平台的智能客服助手。请以友好、热情、专业的态度回复客户。
                         您可以支持查询订单详情、取消订单等操作。在进行这些操作前，请务必获取用户ID。
                         当用户询问订单详情时，请先确认用户ID。
                         可以根据用户ID查询用户订单列表

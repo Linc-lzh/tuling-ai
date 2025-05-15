@@ -1,8 +1,8 @@
 package com.fox.toolcallingdemo.controller;
 
 
-import com.fox.toolcallingdemo.tool.weather.WeatherProperties;
-import com.fox.toolcallingdemo.tool.weather.method.WeatherTools;
+import com.fox.toolcallingdemo.tool.weather.method.WeatherTool;
+import com.fox.toolcallingdemo.tool.weather.method.WeatherToolImpl;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,18 +15,18 @@ public class WeatherController {
 
     private final ChatClient dashScopeChatClient;
 
-    private final WeatherProperties weatherProperties;
-
-    public WeatherController(ChatClient.Builder chatClientBuilder, WeatherProperties weatherProperties) {
-        this.dashScopeChatClient = chatClientBuilder.build();
-        this.weatherProperties = weatherProperties;
+    public WeatherController(ChatClient.Builder chatClientBuilder) {
+        this.dashScopeChatClient = chatClientBuilder
+                //.defaultFunctions("weatherFunction")
+                //.defaultTools(new WeatherToolImpl())
+                .build();
     }
 
     /**
      * 无工具版
      */
     @GetMapping("/chat")
-    public String simpleChat(@RequestParam(value = "query", defaultValue = "请告诉我北京1天以后的天气") String query) {
+    public String simpleChat(@RequestParam(value = "query", defaultValue = "北京今天的天气") String query) {
         return dashScopeChatClient.prompt(query).call().content();
     }
 
@@ -34,15 +34,19 @@ public class WeatherController {
      * 调用工具版 - function
      */
     @GetMapping("/chat-tool-function")
-    public String chatTranslateFunction(@RequestParam(value = "query", defaultValue = "请告诉我北京1天以后的天气") String query) {
-        return dashScopeChatClient.prompt(query).tools("getWeatherFunction").call().content();
+    public String chatTranslateFunction(@RequestParam(value = "query", defaultValue = "北京今天的天气") String query) {
+
+        return dashScopeChatClient.prompt(query).functions("weatherFunction").call().content();
     }
+
+
 
     /**
      * 调用工具版 - method
      */
     @GetMapping("/chat-tool-method")
-    public String chatTranslateMethod(@RequestParam(value = "query", defaultValue = "请告诉我北京1天以后的天气") String query) {
-        return dashScopeChatClient.prompt(query).tools(new WeatherTools(weatherProperties)).call().content();
+    public String chatTranslateMethod(@RequestParam(value = "query", defaultValue = "北京今天的天气") String query) {
+
+        return dashScopeChatClient.prompt(query).tools(new WeatherToolImpl()).call().content();
     }
 }
