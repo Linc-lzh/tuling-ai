@@ -43,6 +43,7 @@ public class OpenOrderService {
         return restTemplate.getForObject(url, Order.class, orderId);
     }
 
+    @Tool(description = "根据订单ID取消订单" )
     public boolean cancelOrder(String orderId) {
         String url = BASE_URL+"/cancel/{orderId}";
         return restTemplate.postForObject(url, null, Boolean.class, orderId);
